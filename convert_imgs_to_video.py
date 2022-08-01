@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # fourcc = cv2.VideoWriter_fourcc(*"MJPG")
     shape = (int(3088/4), int(2064/4))
     # shape = (1920, 1280)
-    videoWriter = cv2.VideoWriter(os.path.join(img_root, '{}.mp4'.format(name)), fourcc, fps, shape)  # 最后一个是保存图片的尺寸
+    videoWriter = cv2.VideoWriter(os.path.join(img_root, '{}.mp4'.format(name)), fourcc, fps, (shape[1], shape[0]))  # 最后一个是保存图片的尺寸
     imgs = sorted(os.listdir(images_path))
     for i, img_file in enumerate(imgs):
         # if i < 38:
@@ -53,6 +53,8 @@ if __name__ == "__main__":
         # img = cv2.flip(img, 1)  # 需要做一次对称
         frame = cv2.resize(img, dsize=shape)
         frame = img_rotate(frame, 90)
+        #cv2.imshow("test", frame)
+        #cv2.waitKey(0)
         videoWriter.write(frame)
         if i % 100 == 0:
             print("process {}".format(img_file))
