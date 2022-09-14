@@ -1,7 +1,7 @@
 import os
 import cv2
 import numpy as np
-
+import argparse
 
 
 def img_rotate(src, angel):
@@ -29,30 +29,30 @@ def img_rotate(src, angel):
 
 
 if __name__ == "__main__":
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--indir', type=str, required=True, help="input dir")
+    parser.add_argument('--output', type=str, required=True, help="output video name")
+    parser.add_argument('--width', type=int, required=False, default=960, help="video width")
+    parser.add_argument('--height', type=int, required=False, default=1280, help="video height")
+    parser.add_argument('--fps', type=int, required=False, default=40, help="frame rate")
+    args = parser.parse_args()
+    print(args)
     img_root = r"./"
-    images_path = os.path.join(img_root, "FrontCamera")
-    name = "FrontCamera"
-    fps = 40    # 保存视频的FPS，可以适当调整
+    images_path = os.path.join(img_root, args.indir)
+    name = args.output
+    fps = args.fps    # 保存视频的FPS，可以适当调整
     # 可以用(*'DVIX')或(*'X264'),如果都不行先装ffmepg: sudo apt-get install ffmepg
     fourcc = cv2.VideoWriter_fourcc(*"XVID")
     # fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-    shape = (int(3088/4), int(2064/4))
-    # shape = (1920, 1280)
-    videoWriter = cv2.VideoWriter(os.path.join(img_root, '{}.mp4'.format(name)), fourcc, fps, (shape[1], shape[0]))  # 最后一个是保存图片的尺寸
+    #shape = (int(3088/4), int(2064/4))
+    shape = (args.width, args.height)
+    videoWriter = cv2.VideoWriter(os.path.join(img_root, '{}.mp4'.format(name)), fourcc, fps, (shape[0], shape[1]))  # 最后一个是保存图片的尺寸
     imgs = sorted(os.listdir(images_path))
     for i, img_file in enumerate(imgs):
-        # if i < 38:
-        #     continue
-        # if i > 3060:
-        #     break
+     
         img = cv2.imread(os.path.join(images_path, img_file))
-        
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # img = img.T  # 取决于图片是不是倒着的
-        # img = cv2.flip(img, 1)  # 需要做一次对称
         frame = cv2.resize(img, dsize=shape)
-        frame = img_rotate(frame, 90)
+        #frame = img_rotate(frame, 90)
         #cv2.imshow("test", frame)
         #cv2.waitKey(0)
         videoWriter.write(frame)
